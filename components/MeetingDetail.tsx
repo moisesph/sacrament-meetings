@@ -13,31 +13,33 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
   }).format(new Date(`${meeting.date}T12:00:00`));
 
   return (
-    <article className="mx-auto w-full max-w-4xl border border-slate-200 bg-white shadow-sm">
-      <div className="h-1.5 bg-[#006184]" />
+    <article className="w-full overflow-hidden border border-slate-200 bg-white shadow-sm">
+      <div className="h-1 bg-[#006184]" />
 
-      <header className="border-b border-slate-200 px-6 py-8 sm:px-8">
-        <p className="text-sm font-semibold uppercase tracking-wider text-[#006184]">
+      <header className="border-b border-slate-200 px-5 py-5 sm:px-6">
+        <p className="text-xs font-semibold uppercase tracking-wider text-[#006184]">
           {meeting.meetingType} meeting
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
-          Sacrament Meeting
-        </h1>
+        <div className="mt-1 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Sacrament Meeting
+          </h1>
 
-        <time className="mt-2 block text-slate-600" dateTime={meeting.date}>
-          {formattedDate}
-        </time>
+          <time className="text-sm text-slate-600" dateTime={meeting.date}>
+            {formattedDate}
+          </time>
+        </div>
       </header>
 
-      <div className="grid gap-4 border-b border-slate-200 px-6 py-6 sm:grid-cols-2 sm:px-8">
+      <section className="grid gap-3 border-b border-slate-200 px-5 py-4 sm:grid-cols-2 sm:px-6">
         <AgendaItem label="Presiding" value={meeting.presiding} />
         <AgendaItem label="Conducting" value={meeting.conducting} />
-      </div>
+      </section>
 
       {meeting.announcements && meeting.announcements.length > 0 && (
         <MeetingSection title="Announcements">
-          <ul className="list-outside list-disc space-y-2 pl-5 text-slate-700 marker:text-[#006184]">
+          <ul className="list-outside list-disc space-y-1 pl-5 text-sm text-slate-700 marker:text-[#006184]">
             {meeting.announcements.map((announcement) => (
               <li key={announcement}>{announcement}</li>
             ))}
@@ -46,7 +48,7 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
       )}
 
       <MeetingSection title="Opening">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
           <AgendaItem
             label="Opening Hymn"
             value={`#${meeting.openingHymn.number} - ${meeting.openingHymn.title}`}
@@ -58,12 +60,14 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
 
       {(meeting.wardBusiness.length > 0 || meeting.stakeBusiness) && (
         <MeetingSection title="Church Business">
-          <div className="space-y-4">
+          <div className="space-y-3">
             {meeting.wardBusiness.length > 0 && (
-              <div className="border border-slate-200 bg-slate-50 p-4">
-                <h3 className="font-semibold text-slate-900">Ward Business</h3>
+              <div className="border border-slate-200 bg-slate-50 px-4 py-3">
+                <p className="text-sm font-semibold text-slate-900">
+                  Ward Business
+                </p>
 
-                <ul className="mt-3 list-outside list-disc space-y-2 pl-5 text-slate-700 marker:text-[#006184]">
+                <ul className="mt-2 list-outside list-disc space-y-1 pl-5 text-sm text-slate-700 marker:text-[#006184]">
                   {meeting.wardBusiness.map((item, index) => (
                     <li key={`${item.description}-${index}`}>
                       {item.description}
@@ -91,11 +95,11 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
       </MeetingSection>
 
       <MeetingSection title="Program">
-        <div className="space-y-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           {meeting.speakers.map((item, index) => (
             <div
               key={`${item.name}-${index}`}
-              className="border border-slate-200 bg-white p-4"
+              className="border border-slate-200 px-4 py-3"
             >
               <p className="text-xs font-semibold uppercase tracking-wider text-[#006184]">
                 {item.type === "musical-number"
@@ -103,7 +107,9 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
                   : `Speaker ${index + 1}`}
               </p>
 
-              <p className="mt-1 font-semibold text-slate-900">{item.name}</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900">
+                {item.name}
+              </p>
 
               {item.topic && (
                 <p className="mt-1 text-sm text-slate-600">
@@ -115,12 +121,10 @@ export default function MeetingDetail({ meeting }: MeetingDetailProps) {
         </div>
       </MeetingSection>
 
-      <section className="px-6 py-7 sm:px-8">
-        <h2 className="border-l-4 border-[#006184] pl-3 text-xl font-semibold text-slate-900">
-          Closing
-        </h2>
+      <section className="px-5 py-4 sm:px-6">
+        <SectionTitle>Closing</SectionTitle>
 
-        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <AgendaItem
             label="Closing Hymn"
             value={`#${meeting.closingHymn.number} - ${meeting.closingHymn.title}`}
@@ -140,13 +144,22 @@ interface MeetingSectionProps {
 
 function MeetingSection({ title, children }: MeetingSectionProps) {
   return (
-    <section className="border-b border-slate-200 px-6 py-7 sm:px-8">
-      <h2 className="border-l-4 border-[#006184] pl-3 text-xl font-semibold text-slate-900">
-        {title}
-      </h2>
-
-      <div className="mt-5">{children}</div>
+    <section className="border-b border-slate-200 px-5 py-4 sm:px-6">
+      <SectionTitle>{title}</SectionTitle>
+      <div className="mt-3">{children}</div>
     </section>
+  );
+}
+
+interface SectionTitleProps {
+  children: React.ReactNode;
+}
+
+function SectionTitle({ children }: SectionTitleProps) {
+  return (
+    <h2 className="border-l-2 border-[#006184] pl-3 text-lg font-semibold text-slate-900">
+      {children}
+    </h2>
   );
 }
 
@@ -157,9 +170,10 @@ interface AgendaItemProps {
 
 function AgendaItem({ label, value }: AgendaItemProps) {
   return (
-    <div className="border border-slate-200 bg-slate-50 p-4">
-      <p className="text-sm font-medium text-slate-500">{label}</p>
-      <p className="mt-1 font-semibold text-slate-900">{value}</p>
+    <div className="h-full border border-slate-200 bg-slate-50 px-4 py-3">
+      <p className="text-xs font-medium text-slate-500">{label}</p>
+
+      <p className="mt-1 text-sm font-semibold text-slate-900">{value}</p>
     </div>
   );
 }
