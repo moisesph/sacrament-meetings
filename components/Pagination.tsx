@@ -6,7 +6,13 @@ import { usePathname, useSearchParams } from "next/navigation";
 export function Pagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get("page")) || 1;
+
+  const requestedPage = Number(searchParams.get("page") ?? "1");
+
+  const currentPage =
+    Number.isSafeInteger(requestedPage) && requestedPage > 0
+      ? requestedPage
+      : 1;
 
   function createPageURL(page: number) {
     const params = new URLSearchParams(searchParams);

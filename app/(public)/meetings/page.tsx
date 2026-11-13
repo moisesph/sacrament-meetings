@@ -22,7 +22,12 @@ export default async function MeetingsPage({
   const params = await searchParams;
 
   const query = params?.query ?? "";
-  const currentPage = Number(params?.page) || 1;
+  const requestedPage = Number(params?.page ?? "1");
+
+  const currentPage =
+    Number.isSafeInteger(requestedPage) && requestedPage > 0
+      ? requestedPage
+      : 1;
 
   let meetings: SacramentMeeting[];
   let totalPages: number;
