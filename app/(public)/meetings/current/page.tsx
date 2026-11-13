@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import MeetingDetail from "../../../components/MeetingDetail";
-import { getMeetings } from "../../../lib/meetings-db";
+import MeetingDetail from "../../../../components/MeetingDetail";
+import { getMeetingsByDate } from "../../../../lib/meetings-db";
 
 export const instant = false;
 
@@ -20,7 +20,8 @@ export default async function CurrentMeetingPage() {
     String(sunday.getDate()).padStart(2, "0"),
   ].join("-");
 
-  const meeting = getMeetings(sundayDate)[0];
+  const meetings = await getMeetingsByDate(sundayDate);
+  const meeting = meetings[0];
 
   if (!meeting) {
     return (

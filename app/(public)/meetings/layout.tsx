@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { ReactNode } from "react";
-import NavLinks from "../../components/NavLinks";
+import NavLinks from "../../../components/NavLinks";
 
 interface MeetingsLayoutProps {
   children: ReactNode;

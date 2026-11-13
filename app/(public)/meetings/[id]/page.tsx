@@ -1,9 +1,9 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import MeetingDetail from "../../../components/MeetingDetail";
+import MeetingDetail from "../../../../components/MeetingDetail";
 import Loading from "../loading";
-import type { SacramentMeeting } from "../../../lib/types";
+import type { SacramentMeeting } from "../../../../lib/types";
 
 interface MeetingPageProps {
   params: Promise<{
