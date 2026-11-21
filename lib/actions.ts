@@ -184,8 +184,9 @@ export async function updateMeeting(
     return getMeetingValidationState(result.error.issues, formData);
   }
 
-  const meeting = await runMeetingMutation("update", () =>
-    updateMeetingInDatabase(id, result.data),
+  const meeting = await runMeetingMutation(
+    "update",
+    () => updateMeetingInDatabase(id, result.data),
     id,
   );
 
@@ -205,7 +206,11 @@ export async function deleteMeeting(id: number): Promise<boolean> {
     throw new MeetingDeletionDisabledError();
   }
 
-  const deleted = await deleteMeetingInDatabase(id);
+  const deleted = await runMeetingMutation(
+    "delete",
+    () => deleteMeetingInDatabase(id),
+    id,
+  );
 
   if (deleted) {
     revalidatePath("/meetings");

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { deleteMeeting } from "@/lib/actions";
 import { isDemoMeetingDeletionEnabled } from "@/lib/meeting-delete-policy";
-import { runMeetingMutation } from "@/lib/meeting-action-errors";
 import type { SacramentMeeting } from "@/lib/types";
 
 interface MeetingCardProps {
@@ -16,18 +15,16 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
     month: "long",
     year: "numeric",
   }).format(new Date(`${meeting.date}T12:00:00`));
+
   const deleteMeetingWithId = deleteMeeting.bind(null, meeting.id);
 
   async function submitDeleteMeeting(): Promise<void> {
     "use server";
-    const deleted = await runMeetingMutation(
-      "delete",
-      () => deleteMeetingWithId(),
-      meeting.id,
-    );
+
+    const deleted = await deleteMeetingWithId();
 
     if (!deleted) {
-      throw new Error("This meeting was not deleted. It may already be gone.");
+      throw new Error("This meeting could not be deleted. It may no longer exist.");
     }
   }
 
