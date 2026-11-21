@@ -51,51 +51,63 @@ export function MeetingSearch() {
   }, [handleSearch]);
 
   return (
-    <div className="relative">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.75}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-        focusable="false"
-        className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[color:var(--color-muted)]"
+    <div>
+      <label
+        htmlFor="meetings-search"
+        className="mb-2 block text-sm font-medium text-[color:var(--color-text)]"
       >
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-4-4" />
-      </svg>
+        Search meetings
+      </label>
 
-      <input
-        ref={inputRef}
-        type="search"
-        placeholder="Search by speaker, leader, or meeting type..."
-        defaultValue={searchParams.get("query") ?? ""}
-        onChange={(event) => handleSearch(event.target.value)}
-        aria-label="Search meetings"
-        style={{
-          minHeight: "56px",
-          padding: "12px 18px 12px 48px",
-          borderRadius: "8px",
-          border:
-            "1.5px solid color-mix(in srgb, var(--color-primary) 55%, var(--color-surface))",
-          backgroundColor: "var(--color-surface)",
-          color: "var(--color-text)",
-        }}
-        className="
-          block w-full
-          text-base
-          shadow-sm
-          transition-shadow
-          placeholder:text-[color:var(--color-muted)]
-          hover:shadow-md
-          focus:outline-none
-          focus:ring-2
-          focus:ring-[color:var(--color-primary)]
-        "
-      />
+      <div className="relative">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.75}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          focusable="false"
+          className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[color:var(--color-muted)]"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-4-4" />
+        </svg>
+
+        <input
+          ref={inputRef}
+          id="meetings-search"
+          type="search"
+          placeholder="Search by speaker, leader, or meeting type..."
+          defaultValue={searchParams.get("query") ?? ""}
+          onChange={(event) => handleSearch(event.target.value)}
+          aria-describedby="meetings-search-error"
+          style={{
+            minHeight: "56px",
+            padding: "12px 18px 12px 48px",
+            borderRadius: "8px",
+            border:
+              "1.5px solid color-mix(in srgb, var(--color-primary) 55%, var(--color-surface))",
+            backgroundColor: "var(--color-surface)",
+            color: "var(--color-text)",
+          }}
+          className="
+            block w-full
+            text-base
+            shadow-sm
+            transition-shadow
+            placeholder:text-[color:var(--color-muted)]
+            hover:shadow-md
+            focus:outline-none
+            focus:ring-2
+            focus:ring-[color:var(--color-primary)]
+          "
+        />
+      </div>
+
+      <p id="meetings-search-error" aria-live="polite" className="min-h-5 text-sm text-red-700" />
     </div>
   );
 }

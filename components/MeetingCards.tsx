@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { deleteMeeting } from "@/lib/actions";
+import { isDemoMeetingDeletionEnabled } from "@/lib/meeting-delete-policy";
+import { runMeetingMutation } from "@/lib/meeting-action-errors";
 import type { SacramentMeeting } from "@/lib/types";
 
 interface MeetingCardProps {
@@ -6,12 +9,27 @@ interface MeetingCardProps {
 }
 
 export default function MeetingCard({ meeting }: MeetingCardProps) {
+  const deletionEnabled = isDemoMeetingDeletionEnabled();
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     day: "numeric",
     month: "long",
     year: "numeric",
   }).format(new Date(`${meeting.date}T12:00:00`));
+  const deleteMeetingWithId = deleteMeeting.bind(null, meeting.id);
+
+  async function submitDeleteMeeting(): Promise<void> {
+    "use server";
+    const deleted = await runMeetingMutation(
+      "delete",
+      () => deleteMeetingWithId(),
+      meeting.id,
+    );
+
+    if (!deleted) {
+      throw new Error("This meeting was not deleted. It may already be gone.");
+    }
+  }
 
   return (
     <article className="border border-slate-200 bg-white transition-shadow hover:shadow-md">
@@ -40,12 +58,30 @@ export default function MeetingCard({ meeting }: MeetingCardProps) {
           </dl>
         </div>
 
-        <Link
-          href={`/meetings/${meeting.id}`}
-          className="inline-flex items-center justify-center rounded-sm bg-[#006184] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#004f6d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#006184]"
-        >
-          View Details
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href={`/meetings/${meeting.id}`}
+            className="inline-flex items-center justify-center rounded-sm bg-[#006184] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#004f6d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#006184]"
+          >
+            View Details
+          </Link>
+
+          <form action={submitDeleteMeeting}>
+            <button
+              type="submit"
+              aria-label={`Delete meeting ${formattedDate} (ID ${meeting.id})`}
+              title={
+                deletionEnabled
+                  ? `Delete meeting ${formattedDate}`
+                  : "Deletion is disabled unless this server is configured for a disposable demo database"
+              }
+              disabled={!deletionEnabled}
+              className="inline-flex items-center justify-center rounded-sm border border-red-700 px-4 py-2.5 text-sm font-semibold text-red-800 transition-colors hover:bg-red-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Delete
+            </button>
+          </form>
+        </div>
       </div>
     </article>
   );
